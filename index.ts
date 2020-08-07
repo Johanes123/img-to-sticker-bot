@@ -6,7 +6,9 @@ function start(client: Client) {
   client.onMessage(async (message: Message) => {
     if (message.caption === "#sticker" && message.mimetype) {
       console.log("Loading...")
-      const filename: string = `${message.t}.${mime.extension(message.mimetype)}`
+      const filename: string = `${message.t}.${mime.extension(
+        message.mimetype
+      )}`
 
       try {
         console.log("Decrypting...")
@@ -14,7 +16,7 @@ function start(client: Client) {
         const imageBase64: string = `data:${
           message.mimetype
         };base64,${mediaData.toString("base64")}`
-       
+
         client.sendImageAsSticker(message.from, imageBase64)
         console.log("sticker sent!")
       } catch (err) {
