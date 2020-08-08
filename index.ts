@@ -1,6 +1,5 @@
 import { create, Client, decryptMedia, Message } from "@open-wa/wa-automate"
 import mime from "mime-types"
-import fs from "fs"
 import fetch from "node-fetch"
 import bent from "bent"
 
