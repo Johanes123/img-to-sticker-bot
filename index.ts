@@ -25,20 +25,41 @@ function start(client: Client) {
       }
     }
 
-    if (message.body === "/battery") {
-      const batteryLevel = await client.getBatteryLevel()
-      client.sendText(message.from, `Battery Level: ${batteryLevel}%`)
+    if (message.body.includes("/corona")) {
+      console.log("fetching...")
+      const keyword = message.body
+        .replace(/\/corona/, "")
+        .toLowerCase()
+        .trim()
+      const URL = "http://corona.coollabs.work"
+      const data = await fetch(`${URL}/country/${keyword}`)
+      const parsed = await data.json()
+      if (parsed.message) {
+        client.sendText(message.from, "Wrong country, try with another one.")
+        return null
+      }
+      const { Country_Region, Confirmed, Deaths, Recovered, Active } = parsed
+      const content = `*Current COVID-19 Data*
+
+*Country:* ${Country_Region}
+*Confirmed:* ${Confirmed}
+*Deaths:* ${Deaths}
+*Recovered:* ${Recovered}
+*Active:* ${Active}
+
+*Stay At Home :)*`
+
+      client.reply(message.from, content, message.chatId)
+      console.log("Sent!")
     }
 
-    if (message.body === "/dadjoke") {
-      const dadjoke = await fetch("https://icanhazdadjoke.com/", {
-        headers: {
-          Accept: "application/json"
-        }
-      })
-      const parsed = await dadjoke.json()
-      client.sendText(message.from, `${parsed.joke}`)
-      console.log("joke sent")
+    if (message.body === "/battery") {
+      const batteryLevel = await client.getBatteryLevel()
+      client.reply(
+        message.from,
+        `Battery Level: ${batteryLevel}%`,
+        message.chatId
+      )
     }
 
     if (message.body.includes("/anime")) {
@@ -49,6 +70,15 @@ function start(client: Client) {
           `https://api.jikan.moe/v3/search/anime?q=${keyword}`
         )
         const parsed = await data.json()
+        if (!parsed) {
+          client.sendText(
+            message.from,
+            "Anime not found, try again with another keyword."
+          )
+          console.log("Sent!")
+          return null
+        }
+
         const {
           title,
           synopsis,
@@ -59,51 +89,49 @@ function start(client: Client) {
           image_url
         } = parsed.results[0]
         const content = `*Anime Found!*
-Title: ${title}
-Episodes: ${episodes}
-Rating: ${rated}
-Score: ${score}
+*Title:* ${title}
+*Episodes:* ${episodes}
+*Rating:* ${rated}
+*Score:* ${score}
 
-Synopsis: ${synopsis}
+*Synopsis:* ${synopsis}
 
-Url: ${url}`
+*URL*: ${url}`
 
         const image = await bent("buffer")(image_url)
         const base64 = `data:image/jpg;base64,${image.toString("base64")}`
 
-        if (parsed.results.length) {
-          client.sendImage(message.from, base64, title, content)
-          console.log("Sent!")
-        } else {
-          client.sendText(
-            message.from,
-            "Anime not found, try again with another keyword."
-          )
-          console.log("Sent!")
-        }
+        client.sendImage(message.from, base64, title, content)
+        console.log("Sent!")
       } catch (err) {
         console.error(err.message)
       }
     }
 
+    // if (message.body === "/spam") {
+    //   for (let i = 0; i < 10; i++) {
+    //     await client.sendText(message.from, `${i}`)
+    //   }
+    // }
+
     if (message.body === "/info") {
-      const info = await client.getMe()
-      console.log(info)
-      // client.sendText(message.from, info)
+      client.sendText(message.from, "Ini bot, yg punya akun lagi offline hehe")
     }
 
     if (message.body === "/help") {
       const help = `Bot Command List:
-- contact <number>
 - battery
 - sticker
 - help
+- info
 - anime
+- corona
 
 Usage:
 - /battery
 - /anime oregairu
 - /help
+- /corona indonesia
 - Send an image with /sticker caption to convert it to sticker
 `
       client.sendText(message.from, help)
