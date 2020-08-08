@@ -11,7 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "@open-wa/wa-automate": "^1.9.105",
+    "@types/bent": "^7.3.0",
     "@types/mime-types": "^2.1.0",
-    "mime-types": "^2.1.27"
+    "@types/node-fetch": "^2.5.7",
+    "bent": "^7.3.9",
+    "mime-types": "^2.1.27",
+    "node-fetch": "^2.6.0"
   }
 }
