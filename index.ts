@@ -56,9 +56,10 @@ function start(client: Client) {
 
     if (message.body.includes("/nulis")) {
       console.log("writing...")
+      client.sendText(message.from, "sabar njir, masih nulis botnya")
       const text = message.body.replace(/\/nulis/, "")
       spawn("convert", [
-        "paper.jpg",
+        "./assets/paper.jpg",
         "-font",
         "Indie-Flower",
         "-pointsize",
@@ -68,9 +69,9 @@ function start(client: Client) {
         "-annotate",
         "+170+222",
         text,
-        "result.jpg"
+        "./assets/result.jpg"
       ]).on("exit", () => {
-        client.sendImage(message.from, "./result.jpg", "result.jpg", "")
+        client.sendImage(message.from, "./assets/result.jpg", "result.jpg", "")
         console.log("done")
       })
     }
