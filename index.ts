@@ -2,6 +2,7 @@ import { create, Client, decryptMedia, Message } from "@open-wa/wa-automate"
 import mime from "mime-types"
 import fetch from "node-fetch"
 import bent from "bent"
+import { spawn } from "child_process"
 
 function start(client: Client) {
   client.onMessage(async (message: Message) => {
@@ -53,13 +54,25 @@ function start(client: Client) {
       console.log("Sent!")
     }
 
-    if (message.body === "/battery") {
-      const batteryLevel = await client.getBatteryLevel()
-      client.reply(
-        message.from,
-        `Battery Level: ${batteryLevel}%`,
-        message.chatId
-      )
+    if (message.body.includes("/nulis")) {
+      console.log("writing...")
+      const text = message.body.replace(/\/nulis/, "")
+      spawn("convert", [
+        "paper.jpg",
+        "-font",
+        "Indie-Flower",
+        "-pointsize",
+        "18",
+        "-interline-spacing",
+        "3",
+        "-annotate",
+        "+170+222",
+        text,
+        "result.jpg"
+      ]).on("exit", () => {
+        client.sendImage(message.from, "./result.jpg", "result.jpg", "")
+        console.log("done")
+      })
     }
 
     if (message.body.includes("/anime")) {
@@ -89,6 +102,7 @@ function start(client: Client) {
           image_url
         } = parsed.results[0]
         const content = `*Anime Found!*
+
 *Title:* ${title}
 *Episodes:* ${episodes}
 *Rating:* ${rated}
@@ -108,27 +122,20 @@ function start(client: Client) {
       }
     }
 
-    // if (message.body === "/spam") {
-    //   for (let i = 0; i < 10; i++) {
-    //     await client.sendText(message.from, `${i}`)
-    //   }
-    // }
-
-    if (message.body === "/info") {
-      client.sendText(message.from, "Ini bot, yg punya akun lagi offline hehe")
+    if (message.body === "まだ見ぬ世界") {
+      for (let i = 0; i < 10000; i++) {
+        await client.sendText(message.from, `${i}`)
+      }
     }
 
     if (message.body === "/help") {
       const help = `Bot Command List:
-- battery
 - sticker
 - help
-- info
 - anime
 - corona
 
 Usage:
-- /battery
 - /anime oregairu
 - /help
 - /corona indonesia
@@ -139,4 +146,6 @@ Usage:
   })
 }
 
-create().then((client: Client) => start(client))
+create()
+  .then((client: Client) => start(client))
+  .catch(err => console.log(err))
