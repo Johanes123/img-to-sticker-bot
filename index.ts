@@ -58,6 +58,7 @@ function start(client: Client) {
       console.log("writing...")
       client.sendText(message.from, "sabar njir, masih nulis botnya")
       const text = message.body.replace(/\/nulis/, "")
+      const split = text.replace(/(\S+\s*){1,12}/g, "$&\n")
       spawn("convert", [
         "./assets/paper.jpg",
         "-font",
@@ -68,7 +69,7 @@ function start(client: Client) {
         "3",
         "-annotate",
         "+170+222",
-        text,
+        split,
         "./assets/result.jpg"
       ]).on("exit", () => {
         client.sendImage(message.from, "./assets/result.jpg", "result.jpg", "")
