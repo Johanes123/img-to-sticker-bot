@@ -26,6 +26,39 @@ function start(client: Client) {
       }
     }
 
+    if (message.caption === "/sauce" && message.mimetype) {
+      console.log("Loading...")
+      const filename: string = `${message.t}.${mime.extension(
+        message.mimetype
+      )}`
+
+      try {
+        console.log("Searching...")
+        const mediaData = await decryptMedia(message)
+        const imageBase64: string = `data:${
+          message.mimetype
+        };base64,${mediaData.toString("base64")}`
+
+        const raw = await fetch("https://trace.moe/api/search", {
+          method: "POST",
+          body: JSON.stringify({ image: imageBase64 }),
+          headers: { "Content-Type": "application/json" }
+        })
+
+        const parsedResult = await raw.json()
+        const { anime, episode } = parsedResult.docs[0]
+
+        const content = `*Anime Found!*
+
+*Title:* ${anime}
+*Episode:* ${episode} `
+        client.sendImage(message.from, imageBase64, filename, content)
+        console.log("Sent!")
+      } catch (err) {
+        throw new Error(err.message)
+      }
+    }
+
     if (message.body.includes("/corona")) {
       console.log("fetching...")
       const keyword = message.body
@@ -58,23 +91,34 @@ function start(client: Client) {
       console.log("writing...")
       client.sendText(message.from, "sabar njir, masih nulis botnya")
       const text = message.body.replace(/\/nulis/, "")
-      const split = text.replace(/(\S+\s*){1,12}/g, "$&\n")
+      const split = text.replace(/(\S+\s*){1,10}/g, "$&\n")
+      const fixedHeight = split.split("\n").slice(0, 25).join("\\n")
+      console.log(split)
       spawn("convert", [
         "./assets/paper.jpg",
         "-font",
         "Indie-Flower",
+        "-size",
+        "700x960",
         "-pointsize",
         "18",
         "-interline-spacing",
         "3",
         "-annotate",
         "+170+222",
-        split,
+        fixedHeight,
         "./assets/result.jpg"
-      ]).on("exit", () => {
-        client.sendImage(message.from, "./assets/result.jpg", "result.jpg", "")
-        console.log("done")
-      })
+      ])
+        .on("error", () => console.log("error"))
+        .on("exit", () => {
+          client.sendImage(
+            message.from,
+            "./assets/result.jpg",
+            "result.jpg",
+            ""
+          )
+          console.log("done")
+        })
     }
 
     if (message.body.includes("/anime")) {
@@ -132,16 +176,20 @@ function start(client: Client) {
 
     if (message.body === "/help") {
       const help = `Bot Command List:
-- sticker
 - help
 - anime
-- corona
+- sticker
+- covid
+- nulis
+- sauce
 
 Usage:
-- /anime oregairu
 - /help
-- /corona indonesia
+- /anime oregairu
+- /nulis some random words go here
+- /covid indonesia
 - Send an image with /sticker caption to convert it to sticker
+- Send an anime image with /sauce caption to find the anime title
 `
       client.sendText(message.from, help)
     }
