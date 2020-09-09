@@ -17,5 +17,8 @@
     "bent": "^7.3.9",
     "mime-types": "^2.1.27",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "ts-node": "^9.0.0"
   }
 }

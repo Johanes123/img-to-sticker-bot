@@ -87,6 +87,103 @@ function start(client: Client) {
       console.log("Sent!")
     }
 
+    if (message.body === "/jadwal") {
+      const date = new Date()
+      const day = date.getDay()
+      const jadwal = {
+        senin: `*• SENIN*
+Hayati/PJOK
+Hayati/PJOK
+Sutejo/matematika
+istirahat 20'
+Sutejo/matematika
+
+Resti/Bhhs.Jawa
+Resti/Bhhs.Jawa
+istirahat 20'
+Firzon/PPL/K
+Firzon/PPL/K
+Firzon/PPL/K
+Firzon/PPL/K`,
+        selasa: `*• SELASA*
+Agus/PABP
+Agus/PABP
+Agus/PABP
+Dony/PBO-1/R
+istirahat 20'
+Dony/PBO-1/R
+Dony/PBO-1/R
+Dony/PBO-1/R
+istirahat 20'
+Imroatin/B.Indonesia
+Imroatin/B.Indonesia
+Imroatin/B.Indonesia`,
+        rabu: `*• RABU*
+Supriyanti/PPKn
+Supriyanti/PPKn
+Rita/BK
+Sutejo/matematika
+istirahat 20'
+Sutejo/matematika
+Dony/PBO-1/R
+Dony/PBO-1/R
+istirahat 20'
+Dony/PBO-1/R
+Dony/PBO-1/R`,
+        kamis: `*• KAMIS*
+Dony/PWPB-1/R
+Dony/PWPB-1/R
+Dony/PWPB-1/R
+Dony/PWPB-1/R
+istirahat 20'
+Dony/PWPB-1/R
+Erina/PKKwu
+Erina/PKKwu
+istirahat 20'
+Erina/PKKwu
+Erina/PKKwu
+Erina/PKKwu
+Erina/PKKwu
+Erina/PKKwu`,
+        jumat: `*• JUM'AT*
+Dony/PWPB-1/R
+Dony/PWPB-1/R
+Dony/PWPB-1/R
+istirahat 15'
+Yuli/Bhs.Inggris
+Yuli/Bhs.Inggris
+Yuli/Bhs.Inggris
+Sholat Jum'at
+istirahat 
+Hadi/BD-1/R
+Hadi/BD-1/R
+Hadi/BD-1/R
+Hadi/BD-1/R`
+      }
+      switch (day) {
+        case 0:
+          client.sendText(message.from, "libur gan")
+          break
+        case 1:
+          client.sendText(message.from, jadwal.senin)
+          break
+        case 2:
+          client.sendText(message.from, jadwal.selasa)
+          break
+        case 3:
+          client.sendText(message.from, jadwal.rabu)
+          break
+        case 4:
+          client.sendText(message.from, jadwal.kamis)
+          break
+        case 5:
+          client.sendText(message.from, jadwal.jumat)
+          break
+        default:
+          client.sendText(message.from, "libur gan")
+      }
+    }
+
     if (message.body.includes("/nulis")) {
       console.log("writing...")
       client.sendText(message.from, "sabar njir, masih nulis botnya")
