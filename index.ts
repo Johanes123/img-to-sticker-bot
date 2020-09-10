@@ -216,6 +216,7 @@ Hadi/BD-1/R`
           )
           console.log("done")
         })
+    }
 
     if (message.body.includes("/anime")) {
       console.log("fetching...")
@@ -293,8 +294,8 @@ Usage:
 `
       client.sendText(message.from, help)
     }
-  }
-})
+  })
+}
 
 create()
   .then((client: Client) => start(client))
