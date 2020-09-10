@@ -154,7 +154,7 @@ Yuli/Bhs.Inggris
 Yuli/Bhs.Inggris
 Yuli/Bhs.Inggris
 Sholat Jum'at
-istirahat 
+istirahat
 Hadi/BD-1/R
 Hadi/BD-1/R
 Hadi/BD-1/R
@@ -216,7 +216,6 @@ Hadi/BD-1/R`
           )
           console.log("done")
         })
-    }
 
     if (message.body.includes("/anime")) {
       console.log("fetching...")
@@ -271,6 +270,10 @@ Hadi/BD-1/R`
       }
     }
 
+    if (message.body === "/test") {
+      client.sendTextWithMentions(message.from, "something")
+    }
+
     if (message.body === "/help") {
       const help = `Bot Command List:
 - help
@@ -290,8 +293,8 @@ Usage:
 `
       client.sendText(message.from, help)
     }
-  })
-}
+  }
+})
 
 create()
   .then((client: Client) => start(client))
